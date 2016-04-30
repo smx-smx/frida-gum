@@ -16,7 +16,7 @@ pcfiles += \
 	frida-gumjs-1.0.pc
 endif
 
-all-local: $(pcfiles)
+all-local: $(pcfiles) doxyfile.stamp
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = $(pcfiles)
@@ -107,4 +107,17 @@ check: all
 		"$(top_srcdir)/tests/data/specialfunctions-ios-arm64.dylib" \
 		"${RURL}:\"${RPFX}/tests/data/\""
 	ssh "${RURL}" "\"${RPFX}/tests/gum-tests\""
+endif
+
+if HAVE_DOXYGEN
+doc: doxyfile.stamp
+
+doxyfile.stamp:
+	$(DOXYGEN) Doxyfile
+	echo Timestamp > doxyfile.stamp
+
+CLEANFILES = doxyfile.stamp
+
+clean-local:
+	rm -rf doc/*
 endif
